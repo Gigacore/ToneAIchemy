@@ -15,7 +15,7 @@ The **ToneAlchemy AI** application allows users to analyze and modify the tone o
 > access to your boarding pass, and some flights may be impacted. We
 > appreciate your patience.
 
-#### Analysis result
+#### Output (analysis):
 > Apologetic: 10,
 > Serious: 9,
 > Direct: 8,
@@ -36,6 +36,12 @@ The **ToneAlchemy AI** application allows users to analyze and modify the tone o
 - **window.ai API**: Utilizes Google's Gemini Nano LLM for text analysis and tone modification.
 - **Preact**: Lightweight alternative to React for building user interfaces.
 - **Tailwind CSS**: For responsive and customizable styling.
+
+## Observations
+- The analysis can be inconsistent at times, which is expected given the model's small size and early development stage. Future updates may improve this.
+- Model inference works offline since it runs in the browser. However, the application must ensure the necessary scripts are available offline.
+- The model's analysis time increases with complexity, which is expected as it runs on a local device.
+  
 
 ## Usage
 - The `window.ai` API currently works only on latest version of Google Chrome Canary and Chrome Dev (128.0 and above) and disabled by default.
