@@ -2,7 +2,7 @@
 
 # ToneAlchemy
 
-The **ToneAlchemy AI** application allows users to analyze and modify the tone of text using the **window.ai API**, which leverages the **Google Gemini Nano Model**. This application runs directly within the Chrome browser, providing real-time feedback on text tone and enabling tone modifications via user interface.
+ToneAlchemy is a privacy-focused application that allows users to analyze and modify text tone using the window.ai API, powered by the Google Gemini Nano Model. This model runs entirely within the Chrome browser, ensuring user privacy while providing real-time tone feedback and modifications.
 
 ## Features
 
