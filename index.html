@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tone Matcher with Ratings - window.ai API</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="importmap">
+    {
+      "imports": {
+        "preact": "https://unpkg.com/preact@10.13.1/dist/preact.module.js",
+        "preact/hooks": "https://unpkg.com/preact@10.13.1/hooks/dist/hooks.module.js"
+      }
+    }
+    </script>
+    <script type="module">
+      import { h, render } from 'preact';
+      import { useState, useCallback } from 'preact/hooks';
+
+      const TONES = [
+        "Formal", "Informal", "Friendly", "Professional", "Persuasive",
+        "Apologetic", "Thankful", "Urgent", "Humorous", "Sympathetic",
+        "Direct", "Pessimistic", "Serious", "Authoritative",
+        "Inspirational", "Joyful", "Uplifting", "Encouraging", "Assertive"
+      ];
+
+      function ToneMatcher({ theme }) {
+        const [input, setInput] = useState('');
+        const [matchedTones, setMatchedTones] = useState([]);
+        const [loading, setLoading] = useState(false);
+        const [error, setError] = useState('');
+        const [toneChangedText, setToneChangedText] = useState('');
+
+        const handleSubmit = useCallback(async () => {
+          setLoading(true);
+          setError('');
+          setMatchedTones([]);
+          setToneChangedText('');
+          try {
+            if (!window.ai) {
+              throw new Error('window.ai is not available. Please ensure the AI extension is installed.');
+            }
+
+            const conversation = await window.ai.createTextSession();
+            const prompt = `Analyze the following text and match it to one or more of these exact tones: ${TONES.join(", ")}. For each matched tone, provide a rating on a scale of 1 to 10. Provide your answer as a comma-separated list of 'tone:rating' pairs in descending order. If no tones match, respond with "No match". Here's the text to analyze: "${input}"`;
+            
+            const result = await conversation.prompt(prompt);
+
+            conversation.destroy();
+            
+            if (result.toLowerCase() === "no match") {
+              setMatchedTones([]);
+            } else {
+              const parsedTones = result.trim().split('\n').map(line => line.trim()).slice(0, 5).map(pair => {
+                const [tone, rating] = pair.split(':').map(item => item.trim());
+                return { tone, rating: parseInt(rating, 10) };
+              }).filter(({ tone }) => TONES.includes(tone));
+
+              console.log('parsedTones', parsedTones)
+              setMatchedTones(parsedTones);
+            }
+          } catch (error) {
+            console.error('Error:', error);
+            setError(`Error: ${error.message}`);
+          } finally {
+            setLoading(false);
+          }
+        }, [input]);
+
+        const handleToneChange = useCallback(async (selectedTone) => {
+          setLoading(true);
+          setError('');
+          setToneChangedText('');
+          try {
+            if (!window.ai) {
+              throw new Error('window.ai is not available. Please ensure the AI extension is installed.');
+            }
+
+            const conversation = await window.ai.createTextSession();
+            const prompt = `Change the tone of the following text to ${selectedTone}: "${input}"`;
+            
+            const result = await conversation.prompt(prompt);
+
+            conversation.destroy();
+            
+            setToneChangedText(result);
+          } catch (error) {
+            console.error('Error:', error);
+            setError(`Error: ${error.message}`);
+          } finally {
+            setLoading(false);
+          }
+        }, [input]);
+
+        const handleClear = () => {
+          setInput('');
+          setMatchedTones([]);
+          setToneChangedText('');
+          setError('');
+        };
+
+        const copyToClipboard = () => {
+          navigator.clipboard.writeText(toneChangedText).then(() => {
+            alert('Text copied to clipboard!');
+          }).catch(err => {
+            console.error('Failed to copy text: ', err);
+          });
+        };
+
+        return h('div', { class: `max-w-2xl mx-auto p-6 ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} rounded-lg shadow-md` }, [
+          h('textarea', {
+            value: input,
+            onInput: (e) => setInput(e.target.value),
+            class: `w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${theme === 'dark' ? 'bg-gray-700 text-white' : 'bg-white text-gray-900'}`,
+            rows: 5,
+            placeholder: 'Enter your text here to analyze its tone...'
+          }),
+          h('div', { class: 'mt-4 flex justify-start' }, [
+            h('button', { 
+              onClick: handleSubmit, 
+              disabled: loading || input.trim() === '',
+              class: `px-4 py-2 mr-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${loading || input.trim() === '' ? 'opacity-90 cursor-not-allowed' : ''}` 
+            }, 
+              loading ? 'Analyzing...' : 'Analyze Tone'
+            ),
+            h('button', { 
+              onClick: handleClear,
+              class: `px-4 py-2 bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded-md`
+            }, 
+              'Clear'
+            )
+          ]),
+          matchedTones.length > 0 && h('div', { class: 'mt-6' }, [
+            h('h2', { class: 'text-lg font-semibold mb-2' }, 'Matched Tones with Ratings:'),
+            h('ul', { class: 'space-y-2' }, 
+              matchedTones.map(({ tone, rating }) => 
+                h('li', { class: 'flex items-center' }, [
+                  h('span', { class: 'w-1/3 font-medium' }, tone),
+                  h('div', { class: 'w-2/3 bg-gray-200 rounded-full h-2.5 mr-2' }, 
+                    h('div', { 
+                      class: 'bg-blue-600 h-2.5 rounded-full', 
+                      style: { width: `${rating * 10}%` } 
+                    })
+                  ),
+                  h('span', { class: 'text-sm text-gray-600' }, `${rating}/10`)
+                ])
+              )
+            ),
+            h('hr', { class: 'my-4 border-gray-300' }), // Divider line
+            h('div', { class: 'mt-4' }, [ // Added margin to the top of the dropdown
+              h('h3', { class: 'text-md font-semibold mb-2' }, 'Change Tone:'),
+              h('select', { 
+                class: 'w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                onChange: (e) => handleToneChange(e.target.value)
+              }, [
+                h('option', { value: '', disabled: true, selected: true }, 'Select a tone'),
+                ...TONES.map(tone => h('option', { value: tone }, tone))
+              ])
+            ])
+          ]),
+          matchedTones.length === 0 && input.trim() !== '' && !loading && !error && h('p', { class: 'mt-4 text-gray-600' }, ''),
+          error && h('p', { class: 'mt-4 text-red-500' }, error),
+          toneChangedText && h('div', { class: 'mt-6' }, [
+            h('h2', { class: 'text-lg font-semibold mb-2' }, 'Text with Changed Tone:'),
+            h('p', { class: `p-4 border ${theme === 'dark' ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-900'} rounded-md` }, toneChangedText),
+            h('button', {
+              onClick: copyToClipboard,
+              class: `mt-2 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50`
+            }, 'Copy to Clipboard')
+          ])
+        ]);
+      }
+
+      function App() {
+        const [theme, setTheme] = useState('light');
+
+        const toggleTheme = () => {
+          setTheme(theme === 'light' ? 'dark' : 'light');
+        };
+
+        return h('div', { class: `min-h-screen ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'} py-12 px-4 sm:px-6 lg:px-8` }, [
+          h('div', { class: 'absolute top-0 right-0 m-8' }, [
+            h('button', {
+              onClick: toggleTheme,
+              class: `px-3 py-1 text-sm rounded-full focus:outline-none ${theme === 'dark' ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-700'}`
+            }, theme === 'dark' ? 'Light Theme' : 'Dark Theme')
+          ]),
+          h('div', { class: 'max-w-2xl mx-auto' }, [
+            h('h1', { class: 'text-3xl font-bold text-center mb-2' }, 'ToneMaster AI'),
+            h('h2', { class: 'text-xl font-semibold text-center mb-8' }, 'In-Browser Emotion Analyzer'),
+            h(ToneMatcher, { theme })
+          ])
+        ]);
+      }
+
+      render(h(App), document.body);
+    </script>
+</head>
+<body>
+</body>
+</html>
