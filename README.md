@@ -9,6 +9,14 @@ The **ToneAlchemy AI** application allows users to analyze and modify the tone o
 - **Text Analysis**: Analyze the tone of the provided text and receive ratings for various predefined tones.
 - **Tone Change**: Modify the tone of the text to a selected tone using the window.ai API.
 
+## Usage
+- The `window.ai` API currently works only on latest version of Google Chrome Canary and Chrome Dev (128.0 and above) and disabled by default.
+- Under `chrome://flags`, set `#optimization-guide-on-device-model` to `Enabled BypassPerfRequirement` and `#prompt-api-for-gemini-nano` to `Enabled`.
+- Under `chrome://components`, ensure `Optimization Guide On Device Model` is installed and version is not `0.0.0.0`
+
+## Demo
+https://gigacore.github.io/demos/tone-alchemy/
+
 ## Example
 #### Input text
 
@@ -38,11 +46,6 @@ The **ToneAlchemy AI** application allows users to analyze and modify the tone o
 - **window.ai API**: Utilizes Google's Gemini Nano LLM for text analysis and tone modification.
 - **Preact**: Lightweight alternative to React for building user interfaces.
 - **Tailwind CSS**: For responsive and customizable styling.
-
-## Usage
-- The `window.ai` API currently works only on latest version of Google Chrome Canary and Chrome Dev (128.0 and above) and disabled by default.
-- Under `chrome://flags`, set `#optimization-guide-on-device-model` to `Enabled BypassPerfRequirement` and `#prompt-api-for-gemini-nano` to `Enabled`.
-- Under `chrome://components`, ensure `Optimization Guide On Device Model` is installed and version is not `0.0.0.0`
 
 ## Observations
 - The analysis can be inconsistent at times, which is expected given the model's small size and early development stage. Future updates may improve this.
