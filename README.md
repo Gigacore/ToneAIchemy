@@ -2,7 +2,7 @@
 
 ## Overview
 
-The **Text Tone Matcher with Ratings** application allows users to analyze and modify the tone of text using the **window.ai API**, which leverages the **Google Gemini Nano LLM**. This application runs directly within the Chrome browser, providing real-time feedback on text tone and enabling tone modifications with a user-friendly interface.
+The **ToneMaster AI** application allows users to analyze and modify the tone of text using the **window.ai API**, which leverages the **Google Gemini Nano LLM**. This application runs directly within the Chrome browser, providing real-time feedback on text tone and enabling tone modifications with a user-friendly interface.
 
 ## Features
 
