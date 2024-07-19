@@ -1,6 +1,6 @@
-# ToneMaster AI
+# ToneAlchemy
 
-The **ToneMaster AI** application allows users to analyze and modify the tone of text using the **window.ai API**, which leverages the **Google Gemini Nano LLM**. This application runs directly within the Chrome browser, providing real-time feedback on text tone and enabling tone modifications via user interface.
+The **ToneAlchemy AI** application allows users to analyze and modify the tone of text using the **window.ai API**, which leverages the **Google Gemini Nano LLM**. This application runs directly within the Chrome browser, providing real-time feedback on text tone and enabling tone modifications via user interface.
 
 ## Features
 
