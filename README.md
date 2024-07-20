@@ -1,8 +1,10 @@
-![Firefly create a an abstract image that shows how an alchemy can detect the tone of a text message, ](https://github.com/user-attachments/assets/9969b3ee-0770-450f-84a5-15a493be62c7)
-
 # ToneAlchemy
 
 ToneAlchemy is a privacy-focused application that allows users to analyze and modify text tone using the window.ai API, powered by the Google Gemini Nano Model. This model runs entirely within the Chrome browser, ensuring user privacy while providing real-time tone feedback and modifications.
+
+
+https://github.com/user-attachments/assets/662a05ac-e29b-43b5-baa2-f5eb1684142f
+
 
 ## Features
 
