@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tone Matcher with Ratings - window.ai API</title>
+    <title>ToneAlchemy - window.ai API based in-browser text tone analyzer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="importmap">
     {
@@ -38,13 +38,15 @@
           setToneChangedText('');
           try {
             if (!window.ai) {
-              throw new Error('window.ai is not available. Please ensure the AI extension is installed.');
+              throw new Error('window.ai is not available. Please ensure the required flags and components are enabled in Chrome settings. More info at: https://github.com/Gigacore/ToneAIchemy/blob/main/README.md');
             }
 
             const conversation = await window.ai.createTextSession();
             const prompt = `Analyze the following text and match it to one or more of these exact tones: ${TONES.join(", ")}. For each matched tone, provide a rating on a scale of 1 to 10. Provide your answer as a comma-separated list of 'tone:rating' pairs in descending order. If no tones match, respond with "No match". Here's the text to analyze: "${input}"`;
             
             const result = await conversation.prompt(prompt);
+
+            console.log(result)
 
             conversation.destroy();
             
@@ -56,7 +58,6 @@
                 return { tone, rating: parseInt(rating, 10) };
               }).filter(({ tone }) => TONES.includes(tone));
 
-              console.log('parsedTones', parsedTones)
               setMatchedTones(parsedTones);
             }
           } catch (error) {
@@ -186,10 +187,13 @@
             }, theme === 'dark' ? 'Light Theme' : 'Dark Theme')
           ]),
           h('div', { class: 'max-w-2xl mx-auto' }, [
-            h('h1', { class: 'text-3xl font-bold text-center mb-2' }, 'ToneMaster AI'),
-            h('h2', { class: 'text-xl font-semibold text-center mb-8' }, 'In-Browser Emotion Analyzer'),
-            h(ToneMatcher, { theme })
-          ])
+            h('h1', { class: 'text-3xl font-bold text-center mb-2' }, 'Tone', [h('span', { class: 'text-3xl font-bold text-center mb-2 text-blue-600' }, 'AI'), 'chemy']),
+            h('h2', { class: 'text-xl font-semibold text-center mb-8' }, 'In-browser textual tone analyzer'),
+            h(ToneMatcher, { theme }),
+            h('div', {class: 'w-full flex justify-center'}, '', [
+              h('a', {class: 'mt-5 text-sm', href: 'https://github.com/Gigacore/ToneAIchemy'}, 'View code on Github')
+            ])
+          ]),
         ]);
       }
 
