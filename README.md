@@ -45,7 +45,7 @@ https://gigacore.github.io/demos/tone-alchemy/
 
 ## Tech Stack
 
-- **window.ai API**: Utilizes Google's Gemini Nano LLM for text analysis and tone modification.
+- **window.ai API**: Utilizes Google's Gemini Nano model for text analysis and tone modification.
 - **Preact**: Lightweight alternative to React for building user interfaces.
 - **Tailwind CSS**: For responsive and customizable styling.
 
